@@ -1,0 +1,155 @@
+﻿@model BugTrackerBD.Models.Ticket
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Ticket</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AssignedToUser.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AssignedToUser.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OwnerUser.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OwnerUser.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Projects.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Projects.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TicketPriority.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TicketPriority.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TicketStatus.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TicketStatus.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TicketType.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TicketType.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Created)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Created)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Updated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Updated)
+        </dd>
+
+    </dl>
+</div>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="card">
+                <h5 class="card-header">Leave a Comment:</h5>
+                <div class="card-body">
+                    @using (Html.BeginForm("Create", "TicketComments", FormMethod.Post, new { enctype = "Multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.Hidden("TicketId", Model.Id)
+
+                        @Html.TextArea("Body", new { @cols = "50", htmlAttributes = new { @class = "form-control", @Value = "" } })
+
+                        <br />
+
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card">
+                <h5 class="card-header">Log in to leave a comment!</h5>
+            </div>
+        }
+
+        @foreach (var item in Model.TicketComments)
+        {
+            <div class="card my-4">
+                <div class="card-body">
+                    <div class="media mb-4">
+                        <div class="media-body">
+                            <h4 class="mt-0">@Html.DisplayFor(modelItem => item.User.DisplayName)</h4>
+                            <h5 class="mt-0">@Html.DisplayFor(modelItem => item.Created)</h5>
+                            @Html.DisplayFor(modelItem => item.Body)
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <br />
+                                <a href="@Url.Action("Edit", "TicketComments", new { id = item.Id })">Edit</a>
+                                <br />
+                                <a href="@Url.Action("Delete", "TicketComments", new { id = item.Id })">Delete</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col-md-6">
+
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
