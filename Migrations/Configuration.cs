@@ -105,6 +105,21 @@ namespace BugTrackerBD.Migrations
             userId = userManager.FindByEmail("benabsher77@Mailinator.com").Id;
             userManager.AddToRole(userId, "Submitter");
 
+            context.AttachmentTypes.AddOrUpdate(
+               t => t.Type,
+                   new AttachmentType { Type = "default"},
+                   new AttachmentType { Type = "txt"},
+                   new AttachmentType { Type = "doc"},
+                   new AttachmentType { Type = "docx"},
+                   new AttachmentType { Type = "pdf"},
+                   new AttachmentType { Type = "xls"},
+                   new AttachmentType { Type = "xlsx"},
+                   new AttachmentType { Type = "jpg"},
+                   new AttachmentType { Type = "gif"},
+                   new AttachmentType { Type = "png"},
+                   new AttachmentType { Type = "tiff"}
+           );
+
         }
     }
 }

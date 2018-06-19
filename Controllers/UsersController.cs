@@ -131,11 +131,14 @@ namespace BugTrackerBD.Controllers
 
                     }
 
-                    //list user roles 
-                    string userRole = rolesHelper.ListUserRoles(applicationUser.Id).FirstOrDefault().ToString();
-
                     try
                     {
+
+                        //list user roles 
+                        string userRole = rolesHelper.ListUserRoles(applicationUser.Id).FirstOrDefault().ToString();
+
+
+                 
                         rolesHelper.RemoveUserFromRole(applicationUser.Id, userRole);
                     }
                     catch (Exception)
