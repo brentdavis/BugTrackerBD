@@ -209,6 +209,7 @@
     <Compile Include="Controllers\TicketStatusController.cs" />
     <Compile Include="Controllers\TicketTypesController.cs" />
     <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Extension Methods\TicketExtension.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

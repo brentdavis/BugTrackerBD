@@ -41,5 +41,6 @@ namespace BugTrackerBD.Helpers
         {
             return db.Tickets.ToList();
         }
+
     }
 }

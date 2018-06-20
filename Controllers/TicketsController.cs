@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using BugTrackerBD.ActionFilters;
+using BugTrackerBD.Extension_Methods;
 using BugTrackerBD.Helpers;
 using BugTrackerBD.Models;
 using Microsoft.AspNet.Identity;
@@ -95,6 +96,7 @@ namespace BugTrackerBD.Controllers
         }
 
         // GET: Tickets/Edit/5
+        //Custom action filter to check if the user should be allowed to edit
         [TicketAuthorization]
         public ActionResult Edit(int? id)
         {
@@ -125,10 +127,16 @@ namespace BugTrackerBD.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Title,Description,Created,Updated,ProjectsId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToUserId")] Ticket ticket)
         {
+            var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
+
             if (ModelState.IsValid)
             {
                 db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();
+
+                //Using the ticket extension method to record the change history
+                ticket.RecordHistory(oldTicket);
+
                 return RedirectToAction("Index");
             }
             //ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
