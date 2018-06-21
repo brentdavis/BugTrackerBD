@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
 
@@ -78,6 +79,36 @@ namespace BugTrackerBD.Extension_Methods
                     break;
             }
             return returnValue;
+        }
+
+        public static async Task SendNotification(this Ticket ticket, Ticket oldTicket)
+        {
+
+
+            var newValue = ticket.AssignedToUserId;
+            var oldValue = oldTicket.AssignedToUserId;
+            IdentityMessage email = null;
+            if (newValue != oldValue)
+            {
+                try
+                {
+                    email = new IdentityMessage()
+                    {
+                        Subject = "Bug Tracer: You have been assigned to a ticket!",
+                        Body = "You have been assigned to the ticket: " + ticket.Title + ".",
+                        Destination = db.Users.Find(ticket.AssignedToUserId).Email
+                    };
+
+                    var svc = new EmailService();
+
+                    await svc.SendAsync(email);
+
+                }
+                catch (Exception)
+                {
+
+                }
+            }
         }
     }
 }
