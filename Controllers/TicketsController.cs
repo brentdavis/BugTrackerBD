@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using BugTrackerBD.ActionFilters;
@@ -125,7 +126,7 @@ namespace BugTrackerBD.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Title,Description,Created,Updated,ProjectsId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToUserId")] Ticket ticket)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Title,Description,Created,Updated,ProjectsId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToUserId")] Ticket ticket)
         {
             var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
 
@@ -136,6 +137,10 @@ namespace BugTrackerBD.Controllers
 
                 //Using the ticket extension method to record the change history
                 ticket.RecordHistory(oldTicket);
+
+                //Now we use the extension method to mkae a notification if we need one
+                await ticket.SendNotification(oldTicket);
+
 
                 return RedirectToAction("Index");
             }

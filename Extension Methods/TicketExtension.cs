@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
@@ -83,32 +84,118 @@ namespace BugTrackerBD.Extension_Methods
 
         public static async Task SendNotification(this Ticket ticket, Ticket oldTicket)
         {
+            //make notification for being assigned to a new ticket
 
+            var newAssignment = (ticket.AssignedToUserId != null && oldTicket.AssignedToUserId == null);
+            var unAssignment = (ticket.AssignedToUserId == null && oldTicket.AssignedToUserId == null);
+            var reAssignment = ((ticket.AssignedToUserId != null && oldTicket.AssignedToUserId != null) &&
+                                (ticket.AssignedToUserId != oldTicket.AssignedToUserId));
 
-            var newValue = ticket.AssignedToUserId;
-            var oldValue = oldTicket.AssignedToUserId;
+            var body = new StringBuilder();
+            body.AppendFormat("<p>Email From: <bold>{0}</bold>({1})</p>", "Administrator", WebConfigurationManager.AppSettings["emailfrom"]);
+            body.AppendLine("<br/><p><u><b>Message:</b></u></p>");
+            body.AppendFormat("<p><b>Project Name:</b> {0}</p>", db.Projects.FirstOrDefault(p => p.Id == ticket.ProjectsId).Name);
+            body.AppendFormat("<p><b>Ticket Title:</b> {0} | Id: {1}</p>", ticket.Title, ticket.Id);
+            body.AppendFormat("<p><b>Ticket Created:</b> {0}</p>", ticket.Created);
+            body.AppendFormat("<p><b>Ticket Type:</b> {0}</p>", db.TicketTypes.Find(ticket.TicketTypeId).Name);
+            body.AppendFormat("<p><b>Ticket Status:</b>{0}</p>", db.TicketStatuses.Find(ticket.TicketStatusId).Name);
+            body.AppendFormat("<p><b>Ticket Priority:</b> {0}</p>", db.TicketPriorities.Find(ticket.TicketPriorityId).Name);
+
+            //make the email
             IdentityMessage email = null;
-            if (newValue != oldValue)
+            if (newAssignment)
             {
-                try
-                {
+
+                    //create email content
+                    //Send a email to the new dev letting them know they have a new ticket (for when there was no dev on ticket before)
                     email = new IdentityMessage()
                     {
                         Subject = "Bug Tracer: You have been assigned to a ticket!",
-                        Body = "You have been assigned to the ticket: " + ticket.Title + ".",
+                        Body = body.ToString(),
                         Destination = db.Users.Find(ticket.AssignedToUserId).Email
                     };
 
                     var svc = new EmailService();
-
                     await svc.SendAsync(email);
-
-                }
-                catch (Exception)
-                {
-
-                }
             }
+            else if(unAssignment)
+            {
+                //Send a email to the old dev letting them know they have been taken off the ticket
+                email = new IdentityMessage()
+                {
+                    Subject = "Bug Tracer: You have been taken off a ticket!",
+                    Body = body.ToString(),
+                    Destination = db.Users.Find(oldTicket.AssignedToUserId).Email
+                };
+
+                var svc = new EmailService();
+                await svc.SendAsync(email);
+            }
+            else if(reAssignment)
+            {
+                //Send a email to the new dev letting them know they have a new ticket (for when there was a dev on the ticket before)
+                email = new IdentityMessage()
+                {
+                    Subject = "Bug Tracer: A ticket has been assigned to you!",
+                    Body = body.ToString(),
+                    Destination = db.Users.Find(ticket.AssignedToUserId).Email
+                };
+
+                var svc = new EmailService();
+                await svc.SendAsync(email);
+
+                //Send a email to the old dev letting them know they have been taken off the ticket
+                email = new IdentityMessage()
+                {
+                    Subject = "Bug Tracer: You have been taken off of a ticket!",
+                    Body = body.ToString(),
+                    Destination = db.Users.Find(oldTicket.AssignedToUserId).Email
+                };
+
+            svc = new EmailService();
+            await svc.SendAsync(email);
+            }
+
+            TicketNotification notification = null;
+            if (newAssignment)
+            {
+                notification = new TicketNotification
+                {
+                    Body = "Bug Tracer: A ticket has been assigned to you!<br />",
+                    RecipientId = ticket.AssignedToUserId,
+                    TicketId = ticket.Id
+                };
+                db.TicketNotifications.Add(notification);
+            }
+            else if(unAssignment)
+            {
+                notification = new TicketNotification
+                {
+                    Body = "Bug Tracer: You have been taken off of a ticket!<br />",
+                    RecipientId = oldTicket.AssignedToUserId,
+                    TicketId = ticket.Id
+                };
+                db.TicketNotifications.Add(notification);
+            }
+            else if(reAssignment)
+            {
+                notification = new TicketNotification
+                {
+                    Body = "Bug Tracer: A ticket has been assigned to you!<br />",
+                    RecipientId = ticket.AssignedToUserId,
+                    TicketId = ticket.Id
+                };
+                db.TicketNotifications.Add(notification);
+
+                notification = new TicketNotification
+                {
+                    Body = "Bug Tracer: You have been taken off of a ticket!<br />",
+                    RecipientId = oldTicket.AssignedToUserId,
+                    TicketId = ticket.Id
+                };
+                db.TicketNotifications.Add(notification);
+            }
+            db.SaveChanges();
         }
     }
 }
