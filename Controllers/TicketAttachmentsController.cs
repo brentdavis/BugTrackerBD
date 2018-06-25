@@ -5,8 +5,10 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using BugTrackerBD.Extension_Methods;
 using BugTrackerBD.Models;
 using Microsoft.AspNet.Identity;
 
@@ -51,7 +53,7 @@ namespace BugTrackerBD.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,TicketId,FilePath,Description,Created,UserId")] TicketAttachment ticketAttachment, HttpPostedFileBase file)
+        public async Task<ActionResult> Create([Bind(Include = "Id,TicketId,FilePath,Description,Created,UserId")] TicketAttachment ticketAttachment, HttpPostedFileBase file, Ticket ticket)
         {
             if (ModelState.IsValid)
             {
@@ -67,6 +69,11 @@ namespace BugTrackerBD.Controllers
 
                 db.TicketAttachments.Add(ticketAttachment);
                 db.SaveChanges();
+
+                ticket = db.Tickets.Find(ticketAttachment.TicketId);
+
+                await ticket.SendNotification(true);
+
                 return RedirectToAction("Index");
             }
 

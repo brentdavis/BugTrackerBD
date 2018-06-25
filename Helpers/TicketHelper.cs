@@ -10,6 +10,7 @@ namespace BugTrackerBD.Helpers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private ProjectHelper projHelper = new ProjectHelper();
+        private UserRolesHelper rolesHelper = new UserRolesHelper();
 
         //  A more manual way, but less efficent
         //  var myTickets = new List<Ticket>();
@@ -40,6 +41,29 @@ namespace BugTrackerBD.Helpers
         public ICollection<Ticket> getAllTickets()
         {
             return db.Tickets.ToList();
+        }
+
+        public ICollection<Ticket> GetMyTickets(string userId)
+        {
+            var mytickets = new List<Ticket>();
+            var myRole = rolesHelper.ListUserRoles(userId).FirstOrDefault();
+            switch (myRole)
+            {
+                case "Admin":
+                    mytickets.AddRange(db.Tickets.ToList());
+                    break;
+                case "ProjectManager":
+                    mytickets.AddRange(getProjTickets(userId));
+                    break;
+                case "Developer":
+                    mytickets.AddRange(db.Tickets.Where(t => t.AssignedToUserId == userId).ToList());
+                    break;
+                case "Submitter":
+                    mytickets.AddRange(db.Tickets.Where(t => t.OwnerUserId == userId).ToList());
+                    break;
+            }
+
+            return mytickets;
         }
 
     }

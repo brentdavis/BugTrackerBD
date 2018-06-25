@@ -91,6 +91,8 @@ namespace BugTrackerBD.Extension_Methods
             var reAssignment = ((ticket.AssignedToUserId != null && oldTicket.AssignedToUserId != null) &&
                                 (ticket.AssignedToUserId != oldTicket.AssignedToUserId));
 
+
+
             var body = new StringBuilder();
             body.AppendFormat("<p>Email From: <bold>{0}</bold>({1})</p>", "Administrator", WebConfigurationManager.AppSettings["emailfrom"]);
             body.AppendLine("<br/><p><u><b>Message:</b></u></p>");
@@ -197,5 +199,59 @@ namespace BugTrackerBD.Extension_Methods
             }
             db.SaveChanges();
         }
+
+        public static async Task SendNotification(this Ticket ticket, bool notification)
+        {
+            //make notification for being assigned to a new ticket
+
+            var body = new StringBuilder();
+            body.AppendFormat("<p>Email From: <bold>{0}</bold>({1})</p>", "Administrator", WebConfigurationManager.AppSettings["emailfrom"]);
+            body.AppendLine("<br/><p><u><b>Message:</b></u></p>");
+            //body.AppendFormat("<p><b>Project Name:</b> {0}</p>", db.Projects.FirstOrDefault(p => p.Id == ticket.ProjectsId).Name);
+            //body.AppendFormat("<p><b>Ticket Title:</b> {0} | Id: {1}</p>", ticket.Title, ticket.Id);
+            //body.AppendFormat("<p><b>Ticket Created:</b> {0}</p>", ticket.Created);
+            //body.AppendFormat("<p><b>Ticket Type:</b> {0}</p>", db.TicketTypes.Find(ticket.TicketTypeId).Name);
+            //body.AppendFormat("<p><b>Ticket Status:</b>{0}</p>", db.TicketStatuses.Find(ticket.TicketStatusId).Name);
+            //body.AppendFormat("<p><b>Ticket Priority:</b> {0}</p>", db.TicketPriorities.Find(ticket.TicketPriorityId).Name);
+
+            //check if a comment or attachment was made (true for attachment, false for comment)
+            if (notification == true)
+            {
+                //make the email
+                IdentityMessage email = null;
+
+                //create email content
+                //Send a email to the new dev letting them know a attachment has been added to their ticket
+                email = new IdentityMessage();
+
+
+                email.Subject = "Bug Tracer: There is a new attachment on your ticket!";
+                email.Body = body.ToString();
+                email.Destination = db.Users.Find(ticket.AssignedToUserId).Email;
+                
+
+                var svc = new EmailService();
+                await svc.SendAsync(email);
+            }
+            else if(notification == false)
+            {
+                //make the email
+                IdentityMessage email = null;
+
+                //create email content
+                //Send a email to the new dev letting them know a comment has been added to their ticket
+                email = new IdentityMessage()
+                {
+                    Subject = "Bug Tracer: There is a new comment on your ticket!",
+                    Body = body.ToString(),
+                    Destination = db.Users.Find(ticket.AssignedToUserId).Email
+                };
+
+                var svc = new EmailService();
+                await svc.SendAsync(email);
+            }
+            db.SaveChanges();
+        }
+
     }
 }

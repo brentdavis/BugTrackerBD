@@ -1,7 +1,52 @@
-﻿
+﻿@model BugTrackerBD.Models.DashboardVM
+@using Microsoft.AspNet.Identity
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Welcome to Bug Tracer!</h2>
 
+<section class="statistic">
+    <div class="section__content section__content--p30">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6 col-lg-3">
+                    <div class="statistic__item">
+                        <h2 class="number">@Model.TicketData.TicketCount</h2>
+                        <span class="desc">My Tickets</span>
+                        <div class="icon">
+                            <i class="zmdi zmdi-bug"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="statistic__item">
+                        <h2 class="number">@Model.TicketData.TicketCommentCount</h2>
+                        <span class="desc">Total Comments</span>
+                        <div class="icon">
+                            <i class="zmdi zmdi-calendar-note"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="statistic__item">
+                        <h2 class="number">@Model.TicketData.TicketAttachmentCount</h2>
+                        <span class="desc">Total Attachments</span>
+                        <div class="icon">
+                            <i class="zmdi zmdi-attachment"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="statistic__item">
+                        <h2 class="number">@Model.ProjectData.ProjCount</h2>
+                        <span class="desc">Total Projects</span>
+                        <div class="icon">
+                            <i class="zmdi zmdi-book"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

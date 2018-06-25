@@ -5,8 +5,10 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using BugTrackerBD.Extension_Methods;
 using BugTrackerBD.Models;
 
 namespace BugTrackerBD.Controllers
@@ -53,12 +55,17 @@ namespace BugTrackerBD.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Body,Created,TicketId,UserId")] TicketComment ticketComment)
+        public async Task<ActionResult> Create([Bind(Include = "Id,Body,Created,TicketId,UserId")] TicketComment ticketComment, Ticket ticket)
         {
             if (ModelState.IsValid)
             {
                 db.TicketComments.Add(ticketComment);
                 db.SaveChanges();
+
+                ticket = db.Tickets.Find(ticketComment.TicketId);
+
+                await ticket.SendNotification(false);
+
                 return RedirectToAction("Index");
             }
 

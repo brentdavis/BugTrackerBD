@@ -10,7 +10,17 @@ namespace BugTrackerBD.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+
+            // redirect them to the dashboard if they are logged in
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+            else
+            {
+                return View();
+            }
+            
         }
 
         public ActionResult About()

@@ -189,6 +189,67 @@
         }
     </div>
 </div>
+<div class="row">
+    <div class="col-md-6">
+        <h5 class="card-header">Change History:</h5>
+        @foreach (var history in Model.TicketHistories.OrderByDescending(c => c.DateChanged))
+        {
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        @Html.DisplayName("Ticket Title:")
+                    </div>
+                    <div class="col-md-8">
+                        @history.Ticket.Title
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        @Html.DisplayName("Change Made By:")
+                    </div>
+                    <div class="col-md-8">
+                        @history.User.DisplayName
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        @Html.DisplayName("Date Changed:")
+                    </div>
+                    <div class="col-md-8">
+                        @history.DateChanged
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        @Html.DisplayName("Property:")
+                    </div>
+                    <div class="col-md-8">
+                        @history.Property
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        @Html.DisplayName("OldValue:")
+                    </div>
+                    <div class="col-md-8">
+                        @history.OldValue
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        @Html.DisplayName("NewValue:")
+                    </div>
+                    <div class="col-md-8">
+                        @history.NewValue
+                    </div>
+                </div>
+                <hr/>
+            </div>
+        }
+
+    </div>
 <p>
     @Html.ActionLink("Back to List", "Index")
 </p>
