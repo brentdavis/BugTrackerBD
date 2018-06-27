@@ -10,6 +10,7 @@ using System.Web;
 using System.Web.Mvc;
 using BugTrackerBD.Extension_Methods;
 using BugTrackerBD.Models;
+using Microsoft.AspNet.Identity;
 
 namespace BugTrackerBD.Controllers
 {
@@ -59,6 +60,8 @@ namespace BugTrackerBD.Controllers
         {
             if (ModelState.IsValid)
             {
+                ticketComment.Created = DateTimeOffset.Now;
+                ticketComment.UserId = User.Identity.GetUserId();
                 db.TicketComments.Add(ticketComment);
                 db.SaveChanges();
 

@@ -66,5 +66,14 @@ namespace BugTrackerBD.Helpers
             return mytickets;
         }
 
+        public ICollection<TicketNotification> GetNotifications(string userId)
+        {
+            var myNotifications = new List<TicketNotification>();
+
+            myNotifications.AddRange(db.TicketNotifications.Where(n => n.RecipientId == userId).Where(n => n.Notified != true).ToList());
+
+            return myNotifications;
+        }
+
     }
 }

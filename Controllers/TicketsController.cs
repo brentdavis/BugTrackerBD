@@ -41,8 +41,9 @@ namespace BugTrackerBD.Controllers
 
         // GET: Tickets/Details/5
         [TicketAuthorization]
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? id, bool? notified, int? notificationId)
         {
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -52,6 +53,15 @@ namespace BugTrackerBD.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (notified != true && notificationId != null)
+            {
+                var notification = db.TicketNotifications.Find(notificationId);
+                notification.Notified = true;
+                db.SaveChanges();
+            }
+
+
             return View(ticket);
         }
 

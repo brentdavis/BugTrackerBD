@@ -22,7 +22,7 @@ namespace BugTrackerBD.Controllers
         }
 
         // GET: TicketNotifications/Details/5
-        public ActionResult Details(int? id)
+        public ActionResult Details(int? id, string notification)
         {
             if (id == null)
             {
