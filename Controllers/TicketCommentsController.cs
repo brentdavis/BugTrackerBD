@@ -69,7 +69,7 @@ namespace BugTrackerBD.Controllers
 
                 await ticket.SendNotification(false);
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Details","Tickets",ticket);
             }
 
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketComment.TicketId);
@@ -106,7 +106,8 @@ namespace BugTrackerBD.Controllers
             {
                 db.Entry(ticketComment).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                //return RedirectToAction("Index");
+                return RedirectToAction("Details", "Tickets", ticketComment);
             }
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketComment.TicketId);
             ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", ticketComment.UserId);

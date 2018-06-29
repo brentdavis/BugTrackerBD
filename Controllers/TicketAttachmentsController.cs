@@ -62,19 +62,22 @@ namespace BugTrackerBD.Controllers
                     var filename = Path.GetFileName(file.FileName);
                     file.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), filename));
                     ticketAttachment.FilePath = "/Uploads/" + filename;
+
+                    ticketAttachment.Created = DateTimeOffset.Now;
+                    ticketAttachment.UserId = User.Identity.GetUserId();
+
+                    db.TicketAttachments.Add(ticketAttachment);
+                    db.SaveChanges();
+
+                    ticket = db.Tickets.Find(ticketAttachment.TicketId);
+
+                    await ticket.SendNotification(true);
+
                 }
 
-                ticketAttachment.Created = DateTimeOffset.Now;
-                ticketAttachment.UserId = User.Identity.GetUserId();
 
-                db.TicketAttachments.Add(ticketAttachment);
-                db.SaveChanges();
 
-                ticket = db.Tickets.Find(ticketAttachment.TicketId);
-
-                await ticket.SendNotification(true);
-
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Tickets", ticket);
             }
 
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketAttachment.TicketId);

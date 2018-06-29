@@ -84,66 +84,9 @@
                 }
             </div>
             <div class="menu-sidebar2__content js-scrollbar1">
-                @*<div class="account2">
-            <div class="image img-cir img-120">
-                <img src="~/images/icon/avatar-big-01.jpg" alt="John Doe" />
-            </div>
-            <h4 class="name">john doe</h4>
-            <a href="#">Sign out</a>
-        </div>*@
+               
                 <nav class="navbar-sidebar2">
                     <ul class="list-unstyled navbar__list">
-                        @*<li class="active has-sub">
-            <a class="js-arrow" href="#">
-                <i class="fas fa-tachometer-alt"></i>Dashboard
-                <span class="arrow">
-                    <i class="fas fa-angle-down"></i>
-                </span>
-            </a>
-            <ul class="list-unstyled navbar__sub-list js-sub-list">
-                <li>
-                    <a href="index.html">
-                        <i class="fas fa-tachometer-alt"></i>Dashboard 1
-                    </a>
-                </li>
-                <li>
-                    <a href="index2.html">
-                        <i class="fas fa-tachometer-alt"></i>Dashboard 2
-                    </a>
-                </li>
-                <li>
-                    <a href="index3.html">
-                        <i class="fas fa-tachometer-alt"></i>Dashboard 3
-                    </a>
-                </li>
-                <li>
-                    <a href="index4.html">
-                        <i class="fas fa-tachometer-alt"></i>Dashboard 4
-                    </a>
-                </li>
-            </ul>
-        </li>*@
-                        @*@if (Request.IsAuthenticated)
-        {
-            using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
-            {
-                @Html.AntiForgeryToken()
-
-
-                    <li>
-                        @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
-                    </li>
-                    <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-
-            }
-        }
-        else
-        {
-
-                <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-                <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-
-        }*@
                         <li>
                             @using (Html.BeginForm("DemoLogin", "Account", FormMethod.Post))
                             {
@@ -239,17 +182,7 @@
                                 </a>
                             </div>
                             <div class="header-button2">
-                                @*<div class="header-button-item js-item-menu">
-            <i class="zmdi zmdi-search"></i>
-            <div class="search-dropdown js-dropdown">
-                <form action="">
-                    <input class="au-input au-input--full au-input--h65" type="text" placeholder="Search for datas &amp; reports..." />
-                    <span class="search-dropdown__icon">
-                        <i class="zmdi zmdi-search"></i>
-                    </span>
-                </form>
-            </div>
-        </div>*@
+
                                 @if (User.Identity.IsAuthenticated)
                                 {
 
@@ -265,12 +198,15 @@
                                             @foreach (var item in notifications)
                                             {
                                                 <div class="notifi__item">
-                                                    @*<div class="bg-c1 img-cir img-40">
-                                                        <i class="zmdi zmdi-email-open"></i>
-                                                    </div>*@
                                                     <div class="content">
-
-                                                        <a href=" @Url.Action("Details", "Tickets", new { id = item.TicketId, notifications = item.Notified, notificationId = item.Id })">@item.Body</a>
+                                                        @if (!item.Body.Contains("You have been taken off of a ticket"))
+                                                        {
+                                                            <a href="@Url.Action("Details", "Tickets", new { id = item.TicketId, notifications = item.Notified, notificationId = item.Id })">@item.Body</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="@Url.Action("MarkAsRead", "Tickets", new { notificationId = item.Id })">@item.Body</a>
+                                                        }
                                                     </div>
                                                 </div>
                                             }

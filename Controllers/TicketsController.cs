@@ -21,6 +21,8 @@ namespace BugTrackerBD.Controllers
         
         private ProjectHelper projHelper = new ProjectHelper();
 
+        private UserRolesHelper rolesHelper = new UserRolesHelper();
+
         // GET: Tickets
         [Authorize]
         public ActionResult Index()
@@ -63,6 +65,17 @@ namespace BugTrackerBD.Controllers
 
 
             return View(ticket);
+        }
+
+        public ActionResult MarkAsRead(int notificationId)
+        {
+           
+                var notification = db.TicketNotifications.Find(notificationId);
+                notification.Notified = true;
+                db.SaveChanges();
+            
+
+            return RedirectToAction("Index", "Dashboard");
         }
 
         // GET: Tickets/Create
@@ -120,9 +133,27 @@ namespace BugTrackerBD.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
-            ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
-            ViewBag.ProjectsId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectsId);
+
+            //Here we only want the project manager to be able to assign users
+            if (User.IsInRole("ProjectManager"))
+            {
+                //We also only want developers that are on the project to be able to be assigned
+                //First we need a list of all the developers on the ticket's project
+                var listDevs = new List<ApplicationUser>();
+                var projUsers = projHelper.UsersOnProject(ticket.ProjectsId);
+                foreach (var user in projUsers)
+                {
+                    if (rolesHelper.IsUserInRole(user.Id, "Developer"))
+                    {
+                        listDevs.Add(user);
+                    }
+                }
+                //now we set the drop down equal to that list
+                ViewBag.AssignedToUserId = new SelectList(listDevs, "Id", "FirstName", ticket.AssignedToUserId);
+            }
+   
+           
+           
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
             ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
@@ -136,12 +167,15 @@ namespace BugTrackerBD.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Title,Description,Created,Updated,ProjectsId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToUserId")] Ticket ticket)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,Title,Description,Created,ProjectsId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,AssignedToUserId")] Ticket ticket)
         {
             var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.Id == ticket.Id);
 
             if (ModelState.IsValid)
             {
+
+                ticket.Updated = DateTimeOffset.Now;
+
                 db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();
 
@@ -154,14 +188,14 @@ namespace BugTrackerBD.Controllers
 
                 return RedirectToAction("Index");
             }
-            //ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
-            //ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
+            ViewBag.AssignedToUserId = new SelectList(db.Users, "Id", "FirstName", ticket.AssignedToUserId);
+            ViewBag.OwnerUserId = new SelectList(db.Users, "Id", "FirstName", ticket.OwnerUserId);
             ViewBag.ProjectsId = new SelectList(db.Projects, "Id", "Name", ticket.ProjectsId);
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
             ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
-            db.Entry(ticket).Property(x => x.AssignedToUserId).IsModified = true;
-            db.Entry(ticket).Property(x => x.OwnerUserId).IsModified = true;
+            //db.Entry(ticket).Property(x => x.AssignedToUserId).IsModified = true;
+            //db.Entry(ticket).Property(x => x.OwnerUserId).IsModified = true;
             return View(ticket);
         }
 
