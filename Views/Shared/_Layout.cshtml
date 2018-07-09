@@ -11,7 +11,7 @@
     @Scripts.Render("~/bundles/modernizr")
 
 
-    
+
 
     <!-- Required meta tags-->
     <meta charset="UTF-8">
@@ -29,9 +29,6 @@
 
     <!--Data Tables-->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.16/datatables.min.css" />
-
-
-
     @*<link href="css/font-face.css" rel="stylesheet" media="all">
         <link href="vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all">
         <link href="vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all">
@@ -84,7 +81,6 @@
                 }
             </div>
             <div class="menu-sidebar2__content js-scrollbar1">
-               
                 <nav class="navbar-sidebar2">
                     <ul class="list-unstyled navbar__list">
                         <li>
@@ -129,7 +125,6 @@
                                 <a href="@Url.Action("Index", "Users")">
                                     <i class="fas fa-user"></i>Users
                                 </a>
-                                @*<span class="inbox-num">3</span>*@
                             </li>
                             <li>
                                 <a href="@Url.Action("Index", "Tickets")">
@@ -137,11 +132,9 @@
                                 </a>
                             </li>
                             <li>
-
                                 <a href="@Url.Action("Index", "Projects")">
                                     <i class="fas fa-table"></i>Projects
                                 </a>
-
                             </li>
                         }
                         @if (Request.IsAuthenticated)
@@ -162,7 +155,6 @@
                             <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
                             <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
                         }
-
                     </ul>
                 </nav>
             </div>
@@ -185,10 +177,7 @@
 
                                 @if (User.Identity.IsAuthenticated)
                                 {
-
-                               
                                     var ticketHelper = new BugTrackerBD.Helpers.TicketHelper();
-                            
 
                                     var notifications = ticketHelper.GetNotifications(User.Identity.GetUserId().ToString());
 
@@ -212,8 +201,8 @@
                                             }
                                         </div>
                                     </div>
-                                 }
-                       
+                                }
+
                                 <div class="header-button-item mr-0 js-sidebar-btn">
                                     <i class="zmdi zmdi-menu"></i>
                                 </div>
@@ -262,7 +251,6 @@
                                                     <a href="@Url.Action("Index", "Users")">
                                                         <i class="fas fa-user"></i>Users
                                                     </a>
-                                                    @*<span class="inbox-num">3</span>*@
                                                 </li>
                                                 <li>
                                                     <a href="@Url.Action("Index", "Tickets")">
@@ -270,11 +258,9 @@
                                                     </a>
                                                 </li>
                                                 <li>
-
                                                     <a href="@Url.Action("Index", "Projects")">
                                                         <i class="fas fa-table"></i>Projects
                                                     </a>
-
                                                 </li>
                                             }
                                             @if (Request.IsAuthenticated)
@@ -304,47 +290,13 @@
                 </div>
             </header>
 
-            <!--breadcrumb-->
-            @*<section class="au-breadcrumb m-t-75">
-            <div class="section__content section__content--p30">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="au-breadcrumb-content">
-                                <div class="au-breadcrumb-left">
-                                    <span class="au-breadcrumb-span">You are here:</span>
-                                    <ul class="list-unstyled list-inline au-breadcrumb__list">
-                                        <li class="list-inline-item active">
-                                            <a href="#">Home</a>
-                                        </li>
-                                        <li class="list-inline-item seprate">
-                                            <span>/</span>
-                                        </li>
-                                        <li class="list-inline-item">Dashboard</li>
-                                    </ul>
-                                </div>
-                                <button class="au-btn au-btn-icon au-btn--green">
-                                    <i class="zmdi zmdi-plus"></i>add item
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>*@
-
             <div class="container body-content">
                 <br />
                 <br />
                 @RenderBody()
 
                 <hr />
-                @*<section>*@
 
-
-
-
-                @*</section>*@
             </div>
 
             @Scripts.Render("~/bundles/jquery")
@@ -356,7 +308,7 @@
             @Scripts.Render("~/vendor/bootstrap-4.1/popper.min.js")
             @Scripts.Render("~/vendor/bootstrap-4.1/bootstrap.min.js")
             @*<script src="vendor/bootstrap-4.1/popper.min.js"></script>
-        <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>*@
+                <script src="vendor/bootstrap-4.1/bootstrap.min.js"></script>*@
             <!-- Vendor JS -->
             @Scripts.Render("~/vendor/slick/slick.min.js")
             @Scripts.Render("~/vendor/wow/wow.min.js")
@@ -373,19 +325,19 @@
             @Scripts.Render("~/vendor/vector-map/jquery.vmap.sampledata.js")
             @Scripts.Render("~/vendor/vector-map/jquery.vmap.world.js")
             @*<script src="vendor/slick/slick.min.js"></script>
-        <script src="vendor/wow/wow.min.js"></script>
-        <script src="vendor/animsition/animsition.min.js"></script>
-        <script src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>*@
+                <script src="vendor/wow/wow.min.js"></script>
+                <script src="vendor/animsition/animsition.min.js"></script>
+                <script src="vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>*@
             @*<script src="vendor/counter-up/jquery.waypoints.min.js"></script>*@
             @*<script src="vendor/counter-up/jquery.counterup.min.js"></script>*@
             @*<script src="vendor/circle-progress/circle-progress.min.js"></script>
-        <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
-        <script src="vendor/chartjs/Chart.bundle.min.js"></script>
-        <script src="vendor/select2/select2.min.js"></script>
-        <script src="vendor/vector-map/jquery.vmap.js"></script>
-        <script src="vendor/vector-map/jquery.vmap.min.js"></script>
-        <script src="vendor/vector-map/jquery.vmap.sampledata.js"></script>
-        <script src="vendor/vector-map/jquery.vmap.world.js"></script>*@
+                <script src="vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+                <script src="vendor/chartjs/Chart.bundle.min.js"></script>
+                <script src="vendor/select2/select2.min.js"></script>
+                <script src="vendor/vector-map/jquery.vmap.js"></script>
+                <script src="vendor/vector-map/jquery.vmap.min.js"></script>
+                <script src="vendor/vector-map/jquery.vmap.sampledata.js"></script>
+                <script src="vendor/vector-map/jquery.vmap.world.js"></script>*@
             <!-- Main JS-->
             @Scripts.Render("~/js/main.js")
             <!--Data Tables-->
@@ -395,9 +347,9 @@
         </div>
     </div>
     @*<footer class="footer">*@
-        <div class="container text-center">
-            <span class="text-muted">&copy; 2018 Brent Davis. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</span>
-        </div>
+    <div class="container text-center">
+        <span class="text-muted">&copy; 2018 Brent Davis. All rights reserved. Template by <a href="https://colorlib.com">Colorlib</a></span>
+    </div>
     @*</footer>*@
 </body>
 </html>

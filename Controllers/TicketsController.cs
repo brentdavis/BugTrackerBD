@@ -194,8 +194,6 @@ namespace BugTrackerBD.Controllers
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
             ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "Id", "Name", ticket.TicketTypeId);
-            //db.Entry(ticket).Property(x => x.AssignedToUserId).IsModified = true;
-            //db.Entry(ticket).Property(x => x.OwnerUserId).IsModified = true;
             return View(ticket);
         }
 

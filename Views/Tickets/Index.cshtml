@@ -184,7 +184,7 @@
                             @Html.DisplayFor(modelItem => item.Created)
                         </td>
                         <td>
-                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }) 
                             @Html.ActionLink("Details", "Details", new { id = item.Id })
 
                         </td>
@@ -291,7 +291,6 @@
         <br />
     }
 
-
     @if (User.Identity.IsAuthenticated)
     {
 
@@ -340,7 +339,6 @@
             </thead>
             <tbody>
 
-
                 @foreach (var item in Model.allTickets)
                 {
                     <tr>
@@ -375,6 +373,7 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 @Html.ActionLink("Details", "Details", new { id = item.Id })
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id })
                             }
                         </td>
                     </tr>
