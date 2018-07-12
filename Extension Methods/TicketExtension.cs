@@ -138,7 +138,7 @@ namespace BugTrackerBD.Extension_Methods
                 //Send a email to the new dev letting them know they have a new ticket (for when there was a dev on the ticket before)
                 email = new IdentityMessage()
                 {
-                    Subject = "Bug Tracer: A ticket has been assigned to you!",
+                    Subject = "Bug Tracer: You have been assigned to a ticket!",
                     Body = body.ToString(),
                     Destination = db.Users.Find(ticket.AssignedToUserId).Email
                 };
@@ -163,7 +163,7 @@ namespace BugTrackerBD.Extension_Methods
             {
                 notification = new TicketNotification
                 {
-                    Body = "Bug Tracer: A ticket has been assigned to you!<br />",
+                    Body = "Bug Tracer: A ticket has been assigned to you!",
                     RecipientId = ticket.AssignedToUserId,
                     TicketId = ticket.Id
                 };
@@ -173,7 +173,7 @@ namespace BugTrackerBD.Extension_Methods
             {
                 notification = new TicketNotification
                 {
-                    Body = "Bug Tracer: You have been taken off of a ticket!<br />",
+                    Body = "Bug Tracer: You have been taken off of a ticket!",
                     RecipientId = oldTicket.AssignedToUserId,
                     TicketId = ticket.Id
                 };
@@ -183,7 +183,7 @@ namespace BugTrackerBD.Extension_Methods
             {
                 notification = new TicketNotification
                 {
-                    Body = "Bug Tracer: A ticket has been assigned to you!<br />",
+                    Body = "Bug Tracer: A ticket has been assigned to you!",
                     RecipientId = ticket.AssignedToUserId,
                     TicketId = ticket.Id
                 };
@@ -191,7 +191,7 @@ namespace BugTrackerBD.Extension_Methods
 
                 notification = new TicketNotification
                 {
-                    Body = "Bug Tracer: You have been taken off of a ticket!<br />",
+                    Body = "Bug Tracer: You have been taken off of a ticket!",
                     RecipientId = oldTicket.AssignedToUserId,
                     TicketId = ticket.Id
                 };

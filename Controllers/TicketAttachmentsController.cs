@@ -107,14 +107,29 @@ namespace BugTrackerBD.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,TicketId,FilePath,Description,Created,UserId")] TicketAttachment ticketAttachment)
+        public ActionResult Edit([Bind(Include = "Id,TicketId,FilePath,Description,Created,UserId")] TicketAttachment ticketAttachment, HttpPostedFileBase file, Ticket ticket)
         {
             if (ModelState.IsValid)
             {
-                
+
+                if (file != null)
+                {
+
+                    var filename = Path.GetFileName(file.FileName);
+                    file.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), filename));
+                    ticketAttachment.FilePath = "/Uploads/" + filename;
+
+                }
+                else
+                {
+                    ticketAttachment.FilePath = ticketAttachment.FilePath;
+                }
                 db.Entry(ticketAttachment).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+                ticket = db.Tickets.Find(ticketAttachment.TicketId);
+
+                return RedirectToAction("Details", "Tickets", ticket);
             }
             ViewBag.TicketId = new SelectList(db.Tickets, "Id", "Title", ticketAttachment.TicketId);
             ViewBag.UserId = new SelectList(db.Users, "Id", "FirstName", ticketAttachment.UserId);
